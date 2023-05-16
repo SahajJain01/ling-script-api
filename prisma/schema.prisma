@@ -1,0 +1,23 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+model Prompt {
+  id        Int      @id @default(autoincrement())
+  content   String?
+  answer    String?
+  lang      Lang     @relation(fields: [langId], references: [id])
+  langId    Int
+}
+
+model Lang {
+  id      Int      @id @default(autoincrement())
+  code    String?
+  prompts   Prompt[]
+}
