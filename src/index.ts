@@ -4,10 +4,18 @@ import cors = require("cors");
 
 const prisma = new PrismaClient();
 const app = express();
-const corsOptions = {
-	origin: "http://localhost:8100"
-};
 
+const whitelist = ['http://localhost:8100', 'https://sahajjain01.github.io/ling-script'];
+
+const corsOptions = {
+  origin: function (origin: any, callback: any) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  }
+}
 app.use(express.json());
 app.use(cors(corsOptions));
 
