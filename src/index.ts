@@ -10,9 +10,10 @@ const whitelist = ['http://localhost:8100', 'https://sahajjain01.github.io/ling-
 const corsOptions = {
   origin: function (origin: any, callback: any) {
     if (whitelist.indexOf(origin) !== -1) {
-      callback(null, true)
+      callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'))
+      // callback(new Error('Not allowed by CORS'));
+      callback(null, true);
     }
   }
 }
