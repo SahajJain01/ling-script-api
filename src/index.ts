@@ -80,7 +80,7 @@ app.post('/create/lang', async (req, res) => {
 
 app.post('/create/unit', async (req, res) => {
   const { langId, name } = req.body
-  const result = await prisma.prompt.create({
+  const result = await prisma.unit.create({
     data: {
       langId,
       name
