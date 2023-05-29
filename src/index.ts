@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Lang, Prisma, PrismaClient } from "@prisma/client";
 import express from "express";
 import cors = require("cors");
 
@@ -20,6 +20,89 @@ const corsOptions = {
 app.use(express.json());
 app.use(cors(corsOptions));
 
+
+
+app.get("/langs", async (req, res) => {
+  const langs = await prisma.lang.findMany({
+    select: {
+      id: true,
+      name: true
+    }
+  });
+  res.send(langs);
+});
+
+app.get("/units/:langId", async (req, res) => {
+  const unit = await prisma.lang.findFirst({
+    include: {
+      units: {
+        select: {
+          id: true,
+          name: true
+        }
+      }
+    },
+    where: {
+      id: Number(req.params.langId)
+    }
+  });
+  res.send(unit);
+});
+
+
+app.get("/prompts/:unitId", async (req, res) => {
+  const unit = await prisma.unit.findFirst({
+    include: {
+      prompts: {
+        select: {
+          content: true,
+          answer: true
+        }
+      }
+    },
+    where: {
+      id: Number(req.params.unitId)
+    }
+  });
+  res.send(unit);
+});
+
+
+app.post('/create/lang', async (req, res) => {
+  const { name } = req.body
+  const result = await prisma.lang.create({
+    data: {
+      name
+    },
+  })
+  res.json(result)
+})
+
+app.post('/create/unit', async (req, res) => {
+  const { langId, name } = req.body
+  const result = await prisma.prompt.create({
+    data: {
+      langId,
+      name
+    },
+  })
+  res.json(result)
+})
+
+
+app.post('/create/prompt', async (req, res) => {
+  const { unitId, content, answer  } = req.body
+  const result = await prisma.prompt.create({
+    data: {
+      unitId,
+      content,
+      answer
+    },
+  })
+  res.json(result)
+})
+
+
 // app.post(`/signup`, async (req, res) => {
 //   const { name, email, posts } = req.body
 
@@ -38,29 +121,6 @@ app.use(cors(corsOptions));
 //   })
 //   res.json(result)
 // })
-
-app.post('/lang/create', async (req, res) => {
-  const { code } = req.body
-  const result = await prisma.lang.create({
-    data: {
-      code
-    },
-  })
-  res.json(result)
-})
-
-
-app.post('/prompt/create', async (req, res) => {
-  const { content, answer, langId } = req.body
-  const result = await prisma.prompt.create({
-    data: {
-      content,
-      answer,
-      langId,
-    },
-  })
-  res.json(result)
-})
 
 // app.put('/post/:id/views', async (req, res) => {
 //   const { id } = req.params
@@ -111,31 +171,6 @@ app.post('/prompt/create', async (req, res) => {
 //   })
 //   res.json(post)
 // })
-
-app.get("/lang", async (req, res) => {
-  const lang = await prisma.lang.findMany();
-  res.send(lang);
-});
-
-
-app.get("/prompt/:langId/:id", async (req, res) => {
-  const word = await prisma.prompt.findFirst({
-    where: {
-      AND: [
-        { id: Number(req.params.id) },
-        { langId: Number(req.params.langId) },
-      ],
-    },
-    select: {
-      content: true,
-      answer: true,
-    },
-  });
-  res.send({
-    content: word?.content,
-    answer: word?.answer
-  });
-});
 
 // app.get('/user/:id/drafts', async (req, res) => {
 //   const { id } = req.params

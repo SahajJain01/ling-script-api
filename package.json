@@ -4,7 +4,8 @@
   "license": "MIT",
   "scripts": {
     "dev": "ts-node src/index.ts",
-    "build": "tsc --outDir ."
+    "build": "tsc --outDir .",
+    "migrate-dev": "npx prisma migrate dev"
   },
   "dependencies": {
     "@prisma/client": "^4.14.0",
