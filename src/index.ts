@@ -35,6 +35,7 @@ app.get("/langs", async (req, res) => {
 app.get("/units/:langId", async (req, res) => {
   const data = await prisma.lang.findFirst({
     select: {
+      name: true,
       units: {
         select: {
           id: true,
@@ -46,7 +47,7 @@ app.get("/units/:langId", async (req, res) => {
       id: Number(req.params.langId)
     }
   });
-  res.send(data?.units);
+  res.send(data);
 });
 
 
