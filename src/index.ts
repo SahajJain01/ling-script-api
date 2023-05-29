@@ -23,35 +23,35 @@ app.use(cors(corsOptions));
 
 
 app.get("/langs", async (req, res) => {
-  const langs = await prisma.lang.findMany({
+  const data = await prisma.lang.findMany({
     select: {
       id: true,
       name: true
     }
   });
-  res.send(langs);
+  res.send(data);
 });
 
 app.get("/units/:langId", async (req, res) => {
-  const unit = await prisma.lang.findFirst({
-    include: {
+  const data = await prisma.lang.findFirst({
+    select: {
       units: {
         select: {
           id: true,
           name: true
-        }
-      }
+        },
+      },
     },
     where: {
       id: Number(req.params.langId)
     }
   });
-  res.send(unit);
+  res.send(data?.units);
 });
 
 
 app.get("/prompts/:unitId", async (req, res) => {
-  const unit = await prisma.unit.findFirst({
+  const data = await prisma.unit.findFirst({
     include: {
       prompts: {
         select: {
@@ -64,7 +64,7 @@ app.get("/prompts/:unitId", async (req, res) => {
       id: Number(req.params.unitId)
     }
   });
-  res.send(unit);
+  res.send(data?.prompts);
 });
 
 
